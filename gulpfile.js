@@ -40,9 +40,6 @@ gulp.task( 'styles', function () {
     .pipe( rev() )
     .pipe( gulp.dest( PUBLIC_DIR + 'styles/' ) )
     .pipe( rev.manifest() )
-    .pipe( function( manifest ) {
-      console.log( '!!! ', manifest );
-    })
     .pipe( gulp.dest(  ASSETS_DIR + 'styles/'  ) );
   gulp.run( 'template' );
 });
