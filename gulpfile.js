@@ -25,8 +25,8 @@ var gulp       = require( 'gulp' ),
     stylesRev  = require( './assets/styles/rev-manifest.json' );
 
 
-var assetsDir = './assets/',
-    publicDir = './public/';
+var ASSETS_DIR = './assets/',
+    PUBLIC_DIR = './public/';
 
 
 /**
@@ -34,20 +34,24 @@ var assetsDir = './assets/',
  *
  */
 gulp.task( 'styles', function () {
-  gulp.src( assetsDir + 'styles/main.less' )
+  gulp.src( ASSETS_DIR + 'styles/main.less' )
     .pipe( less() )
     .pipe( minifyCSS() )
     .pipe( rev() )
-    .pipe( gulp.dest( publicDir + 'styles/' ) )
+    .pipe( gulp.dest( PUBLIC_DIR + 'styles/' ) )
     .pipe( rev.manifest() )
-    .pipe( gulp.dest(  assetsDir + 'styles/'  ) );
-
+    .pipe( function( manifest ) {
+      console.log( '!!! ', manifest );
+    })
+    .pipe( gulp.dest(  ASSETS_DIR + 'styles/'  ) );
   gulp.run( 'template' );
 });
 
 
 gulp.task( 'scripts' , function () {
-  gulp.src( assetsDir + 'scripts/**.js' )
+  gulp.run( 'clean-scripts' );
+
+  gulp.src( ASSETS_DIR + 'scripts/**.js' )
     .pipe( concat( 'main.js' ) )
     /**
      * uncomment the next line, if you want to strip out
@@ -56,32 +60,39 @@ gulp.task( 'scripts' , function () {
     //.pipe( stripDebug() )
     .pipe( uglify( {outSourceMaps: true} ) )
     .pipe( rev() )
-    .pipe( gulp.dest( publicDir + 'scripts/' ) )
+    .pipe( gulp.dest( PUBLIC_DIR + 'scripts/' ) )
     .pipe( rev.manifest() )
-    .pipe( gulp.dest(  assetsDir + 'scripts/'  ) );
+    .pipe( gulp.dest(  ASSETS_DIR + 'scripts/'  ) );
 
   gulp.run( 'template' );
 });
 
 
+gulp.task( 'clean-scripts' , function () {
+  gulp.src( PUBLIC_DIR + 'scripts/' )
+    .pipe( clean() );
+});
+
+
+
 gulp.task( 'template', function() {
   var opts = {comments:false,spare:false};
 
-  gulp.src( assetsDir + 'index.html' )
+  gulp.src( ASSETS_DIR + 'index.html' )
     .pipe( template( {
       styles  : 'styles/' + stylesRev['main.css'],
       scripts : 'scripts/' + scriptsRev['main.js']
     }
     ) )
     .pipe( minifyHTML( opts ) )
-    .pipe( gulp.dest( publicDir ) );
+    .pipe( gulp.dest( PUBLIC_DIR ) );
 });
 
 
 gulp.task( 'images', function () {
-    gulp.src( assetsDir + 'images/**/*' )
+    gulp.src( ASSETS_DIR + 'images/**/*' )
       .pipe(imagemin())
-      .pipe(gulp.dest( publicDir + 'images' ));
+      .pipe(gulp.dest( PUBLIC_DIR + 'images' ));
   });
 
 
@@ -97,16 +108,17 @@ gulp.task( 'landingpage', function(){
     gulp.run( 'scripts' );
     gulp.run( 'styles' );
     gulp.run( 'template' );
+    gulp.run( 'images' );
 
-    gulp.watch( assetsDir + 'styles/**/*.less', function() {
+    gulp.watch( ASSETS_DIR + 'styles/**/*.less', function() {
       gulp.run( 'styles' );
     });
 
-    gulp.watch( assetsDir + 'scriptss/**/*.js', function() {
+    gulp.watch( ASSETS_DIR + 'scripts/**/*.js', function() {
       gulp.run( 'scripts' );
     });
 
-    gulp.watch( assetsDir + 'index.html', function() {
+    gulp.watch( ASSETS_DIR + 'index.html', function() {
       gulp.run( 'template' );
     });
   }
