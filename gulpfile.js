@@ -49,7 +49,11 @@ gulp.task( 'styles', function () {
 gulp.task( 'scripts' , function () {
   gulp.src( assetsDir + 'scripts/**.js' )
     .pipe( concat( 'main.js' ) )
-    // .pipe( stripDebug() )  // uncomment this line, if you want to strip out console, alert, and debugger statements
+    /**
+     * uncomment the next line, if you want to strip out
+     * console, alert, and debugger statements
+     */
+    //.pipe( stripDebug() )
     .pipe( uglify( {outSourceMaps: true} ) )
     .pipe( rev() )
     .pipe( gulp.dest( publicDir + 'scripts/' ) )
