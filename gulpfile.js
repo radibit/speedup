@@ -8,6 +8,7 @@
 
 // Require the needed packages
 var gulp       = require( 'gulp' ),
+    gutil      = require( 'gulp-util'),
     less       = require( 'gulp-less' ),
     clean      = require( 'gulp-clean' ),
     concat     = require( 'gulp-concat' ),
@@ -20,29 +21,60 @@ var gulp       = require( 'gulp' ),
     stripDebug = require( 'gulp-strip-debug' ),
     watch      = require( 'gulp-watch' ),
 
+    // put all your source files into this folder:
     ASSETS_DIR = './assets/',
+    // we will serve the optimized files from this folder:
     PUBLIC_DIR = './public/',
 
     scriptsHash = '',
     stylesHash = '';
 
 
-/**
- * LANDINGPAGE TASKS
+/*******************************************************************************
+ * STYLE TASK
  *
+ * this task is responsible for the style files
+ * - it will delete old generated css files
+ * - we will compile the less files to css
+ * - we will minify the css files
+ * - hash the files
+ * - and save the new file name in the 'stylesHash' variable
  */
 gulp.task( 'styles', function () {
+  // trigger task to cleanup old generated style/css files
+  gulp.run( 'clean-styles' );
+
   gulp.src( ASSETS_DIR + 'styles/main.less' )
     .pipe( less() )
     .pipe( minifyCSS() )
     .pipe( rev() )
     .pipe( gulp.dest( PUBLIC_DIR + 'styles/' ) )
-    .pipe( rev.manifest() )
-    .pipe( gulp.dest(  ASSETS_DIR + 'styles/'  ) );
-  gulp.run( 'template' );
+    .pipe( gutil.buffer( function ( err, files ) {
+      stylesHash = files.map( function ( file ) {
+        return file.path.replace( file.base, '' );
+      }).join( '' );
+    }));
+
 });
 
 
+gulp.task( 'clean-styles' , function () {
+  // delete old generated stlye/css files
+  gulp.src( PUBLIC_DIR + 'styles/' )
+    .pipe( clean() );
+});
+
+
+
+/*******************************************************************************
+ * SCRIPT TASKS
+ *
+ * this task is responsible for the JavaScript files
+ * - it will delete old generated files
+ * - concatenate all file in as ASSETS_DIR + 'scripts/
+ * - hash the files
+ * - and save the new file name in the 'scriptsHash' variable
+ */
 gulp.task( 'scripts' , function () {
   gulp.run( 'clean-scripts' );
 
@@ -56,27 +88,36 @@ gulp.task( 'scripts' , function () {
     .pipe( uglify( {outSourceMaps: true} ) )
     .pipe( rev() )
     .pipe( gulp.dest( PUBLIC_DIR + 'scripts/' ) )
-    .pipe( rev.manifest() )
-    .pipe( gulp.dest(  ASSETS_DIR + 'scripts/'  ) );
+    .pipe( gutil.buffer( function ( err, files ) {
+      scriptsHash = files.map( function ( file ) {
+        return file.path.replace( file.base, '' );
+      }).join( '' );
+    }));
 
-  gulp.run( 'template' );
 });
 
 
 gulp.task( 'clean-scripts' , function () {
+  // delete old generated script files
   gulp.src( PUBLIC_DIR + 'scripts/' )
     .pipe( clean() );
 });
 
 
-
+/*******************************************************************************
+ * TEMPLATE TASK
+ *
+ * this task is responsible for the HTML template
+ *  - it will populate the placeholders for the optimized script & style file names
+ *  - and it will minify the HTML template file to save some bits
+ */
 gulp.task( 'template', function() {
   var opts = {comments:false,spare:false};
 
   gulp.src( ASSETS_DIR + 'index.html' )
     .pipe( template( {
-      styles  : 'styles/' + stylesRev['main.css'],
-      scripts : 'scripts/' + scriptsRev['main.js']
+      styles  : 'styles/' + scriptsHash,
+      scripts : 'scripts/' + stylesHash
     }
     ) )
     .pipe( minifyHTML( opts ) )
@@ -84,6 +125,13 @@ gulp.task( 'template', function() {
 });
 
 
+/*******************************************************************************
+ * IMAGE TASK
+ *
+ * this task is responsible for image optimization
+ *  - it will optimize all images in the assets folder and move them to
+ *    the public folder
+ */
 gulp.task( 'images', function () {
     gulp.src( ASSETS_DIR + 'images/**/*' )
       .pipe(imagemin())
@@ -116,6 +164,15 @@ gulp.task( 'landingpage', function(){
     gulp.watch( ASSETS_DIR + 'index.html', function() {
       gulp.run( 'template' );
     });
+
+    gulp.watch( PUBLIC_DIR + 'scripts/*', function() {
+      gulp.run( 'template' );
+    });
+
+    gulp.watch( PUBLIC_DIR + 'styles/*', function() {
+      gulp.run( 'template' );
+    });
+
   }
 );
 
