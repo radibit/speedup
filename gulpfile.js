@@ -20,13 +20,11 @@ var gulp       = require( 'gulp' ),
     stripDebug = require( 'gulp-strip-debug' ),
     watch      = require( 'gulp-watch' ),
 
-// require mapping of original paths to the revisioned paths
-    scriptsRev = require( './assets/scripts/rev-manifest.json' ),
-    stylesRev  = require( './assets/styles/rev-manifest.json' );
+    ASSETS_DIR = './assets/',
+    PUBLIC_DIR = './public/',
 
-
-var ASSETS_DIR = './assets/',
-    PUBLIC_DIR = './public/';
+    scriptsHash = '',
+    stylesHash = '';
 
 
 /**
