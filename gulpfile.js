@@ -114,7 +114,7 @@ gulp.task( 'clean-scripts' , function () {
 gulp.task( 'template', function() {
   var opts = {comments:false,spare:false};
 
-  gulp.src( ASSETS_DIR + 'index.html' )
+  gulp.src( 'templates/**/*.html' )
     .pipe( template( {
       styles  : 'styles/' + scriptsHash,
       scripts : 'scripts/' + stylesHash
@@ -161,7 +161,7 @@ gulp.task( 'landingpage', function(){
       gulp.run( 'scripts' );
     });
 
-    gulp.watch( ASSETS_DIR + 'index.html', function() {
+    gulp.watch( ASSETS_DIR + 'templates/**/*.html', function() {
       gulp.run( 'template' );
     });
 
