@@ -155,10 +155,12 @@ gulp.task( 'landingpage', function(){
 
     gulp.watch( ASSETS_DIR + 'styles/**/*.less', function() {
       gulp.run( 'styles' );
+      gulp.run( 'template' );
     });
 
     gulp.watch( ASSETS_DIR + 'scripts/**/*.js', function() {
       gulp.run( 'scripts' );
+      gulp.run( 'template' );
     });
 
     gulp.watch( ASSETS_DIR + 'templates/**/*.html', function() {
