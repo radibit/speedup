@@ -15,6 +15,7 @@ var gulp        = require( 'gulp' ),
     uglify      = require( 'gulp-uglify' ),
     minifyHTML  = require( 'gulp-minify-html' ),
     minifyCSS   = require( 'gulp-minify-css' ),
+    jshint      = require( 'gulp-jshint' ),
     imagemin    = require( 'gulp-imagemin' ),
     rev         = require( 'gulp-rev' ),
     runSequence = require( 'run-sequence' ),
@@ -27,6 +28,13 @@ var gulp        = require( 'gulp' ),
     ASSETS_DIR = './assets/',
     // we will serve the optimized files from this folder:
     PUBLIC_DIR = './public/',
+    // all paths for watching and regeneration
+    PATHS      = {
+      template : 'templates/**/*.html',
+      jshint   : [ 'gulpfile.js', ASSETS_DIR + 'scripts/**/*.js' ],
+      less     : ASSETS_DIR + 'styles/**/*.less',
+      scripts  : ASSETS_DIR + 'scripts/**/*.js'
+    },
 
     scriptsHash = '',
     stylesHash = '';
@@ -80,7 +88,7 @@ gulp.task( 'clean-styles' , function () {
 gulp.task( 'scripts' , function () {
   gulp.run( 'clean-scripts' );
 
-  return gulp.src( ASSETS_DIR + 'scripts/**.js' )
+  return gulp.src( PATHS.scripts )
     .pipe( concat( 'main.js' ) )
     /**
      * uncomment the next line, if you want to strip out
@@ -99,6 +107,18 @@ gulp.task( 'scripts' , function () {
 });
 
 
+gulp.task( 'jshint', function() {
+  return gulp.src( PATHS.jshint )
+    .pipe( jshint() )
+    .pipe( jshint.reporter( 'jshint-stylish' ) );
+} );
+
+
+/*******************************************************************************
+ * JSHINT TASK
+ *
+ * this task will validate gulpfile and all JS in assets for JSHINT errors
+ */
 gulp.task( 'clean-scripts' , function () {
   // delete old generated script files
   gulp.src( PUBLIC_DIR + 'scripts/' )
@@ -116,7 +136,7 @@ gulp.task( 'clean-scripts' , function () {
 gulp.task( 'template', function() {
   var opts = {comments:false,spare:false};
 
-  gulp.src( 'templates/**/*.html' )
+  gulp.src( PATHS.template )
     .pipe( template( {
       styles  : 'styles/' + stylesHash,
       scripts : 'scripts/' + scriptsHash
@@ -166,15 +186,21 @@ gulp.task( 'build', function() {
 gulp.task( 'dev', function() {
   livereload.listen();
 
-  gulp.watch( ASSETS_DIR + 'styles/**/*.less', function() {
+  // generate CSS
+  gulp.watch( PATHS.less, function() {
     runSequence( 'styles', 'template' );
   });
 
-  gulp.watch( ASSETS_DIR + 'scripts/**/*.js', function() {
+  // minify JS
+  gulp.watch( PATHS.scripts, function() {
     runSequence( 'scripts', 'template' );
   });
 
-  gulp.watch( 'templates/**/*.html', function() {
+  // check JS for JSHINT errors
+  gulp.watch( PATHS.jshint, [ 'jshint' ] );
+
+  // generate HTML
+  gulp.watch( PATHS.template, function() {
     gulp.run( 'template' );
   });
 });
