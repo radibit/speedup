@@ -116,8 +116,8 @@ gulp.task( 'template', function() {
 
   gulp.src( 'templates/**/*.html' )
     .pipe( template( {
-      styles  : 'styles/' + scriptsHash,
-      scripts : 'scripts/' + stylesHash
+      styles  : 'styles/' + stylesHash,
+      scripts : 'scripts/' + scriptsHash
     }
     ) )
     .pipe( minifyHTML( opts ) )
