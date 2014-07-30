@@ -1,5 +1,8 @@
 speedup
 ========
+
+[![Dependency Status](http://img.shields.io/gemnasium/chaeringer/speedup.svg?style=flat)](https://gemnasium.com/chaeringer/speedup) [![Build with gulp](http://img.shields.io/badge/built%20with-gulp.js-red.svg)]
+
 use this as startingpoint for frontend performance optimizations
 
 
