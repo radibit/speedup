@@ -166,15 +166,6 @@ gulp.task( 'landingpage', function(){
     gulp.watch( ASSETS_DIR + 'templates/**/*.html', function() {
       gulp.run( 'template' );
     });
-
-    gulp.watch( PUBLIC_DIR + 'scripts/*', function() {
-      gulp.run( 'template' );
-    });
-
-    gulp.watch( PUBLIC_DIR + 'styles/*', function() {
-      gulp.run( 'template' );
-    });
-
   }
 );
 
