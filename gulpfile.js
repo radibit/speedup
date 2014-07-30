@@ -124,7 +124,7 @@ gulp.task( 'template', function() {
     ) )
     .pipe( minifyHTML( opts ) )
     .pipe( gulp.dest( PUBLIC_DIR ) )
-    .pipe( livereload() );
+    .pipe( livereload( { auto : false } ) );
 });
 
 
@@ -142,16 +142,29 @@ gulp.task( 'images', function () {
   });
 
 
-/**
- * LANDINGPAGE
+/*******************************************************************************
+ * BUILD
  *
- *  run all landingpage related tasks with:
+ * run all build related tasks with:
  *
- *  $ gulp landingpage
+ *  $ gulp build
  *
  */
-gulp.task( 'landingpage', function() {
+gulp.task( 'build', function() {
   runSequence( [ 'scripts', 'styles', 'images' ], 'template' );
+});
+
+
+/*******************************************************************************
+ * DEV
+ *
+ * run all build related tasks and enable file watcher with:
+ *
+ * $ gulp dev
+ *
+ */
+gulp.task( 'dev', function() {
+  livereload.listen();
 
   gulp.watch( ASSETS_DIR + 'styles/**/*.less', function() {
     runSequence( 'styles', 'template' );
@@ -174,7 +187,4 @@ gulp.task( 'landingpage', function() {
  *  $ gulp
  *
  */
-gulp.task( 'default', function(){
-    gulp.run( 'landingpage' );
-  }
-);
+gulp.task( 'default', [ 'build' ] );

@@ -23,14 +23,26 @@ $ npm install
 #### gulp will optimize the files and move them to /public
 
 
-use this command to trigger all landingpage related gulp tasks and start a watcher
+### build
+
+use this command to trigger all build related gulp tasks
 
 ```
-$ gulp landingpage
+$ gulp build
 ```
 
+### default
 
-the default gulp will also trigger all landingpage related tasks
+the default gulp will also trigger all build related tasks
+
 ```
 $ gulp
+```
+
+### dev
+
+use this command to trigger all build related gulp tasks and start file watcher for development
+
+```
+$ gulp dev
 ```
