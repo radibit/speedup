@@ -7,19 +7,20 @@
 'use strict';
 
 // Require the needed packages
-var gulp       = require( 'gulp' ),
-    gutil      = require( 'gulp-util'),
-    less       = require( 'gulp-less' ),
-    clean      = require( 'gulp-clean' ),
-    concat     = require( 'gulp-concat' ),
-    uglify     = require( 'gulp-uglify' ),
-    minifyHTML = require( 'gulp-minify-html' ),
-    minifyCSS  = require( 'gulp-minify-css' ),
-    imagemin   = require( 'gulp-imagemin' ),
-    rev        = require( 'gulp-rev' ),
-    template   = require( 'gulp-template' ),
-    stripDebug = require( 'gulp-strip-debug' ),
-    watch      = require( 'gulp-watch' ),
+var gulp        = require( 'gulp' ),
+    gutil       = require( 'gulp-util'),
+    less        = require( 'gulp-less' ),
+    clean       = require( 'gulp-clean' ),
+    concat      = require( 'gulp-concat' ),
+    uglify      = require( 'gulp-uglify' ),
+    minifyHTML  = require( 'gulp-minify-html' ),
+    minifyCSS   = require( 'gulp-minify-css' ),
+    imagemin    = require( 'gulp-imagemin' ),
+    rev         = require( 'gulp-rev' ),
+    runSequence = require( 'run-sequence' ),
+    template    = require( 'gulp-template' ),
+    stripDebug  = require( 'gulp-strip-debug' ),
+    watch       = require( 'gulp-watch' ),
 
     // put all your source files into this folder:
     ASSETS_DIR = './assets/',
@@ -44,7 +45,7 @@ gulp.task( 'styles', function () {
   // trigger task to cleanup old generated style/css files
   gulp.run( 'clean-styles' );
 
-  gulp.src( ASSETS_DIR + 'styles/main.less' )
+  return gulp.src( ASSETS_DIR + 'styles/main.less' )
     .pipe( less() )
     .pipe( minifyCSS() )
     .pipe( rev() )
@@ -78,7 +79,7 @@ gulp.task( 'clean-styles' , function () {
 gulp.task( 'scripts' , function () {
   gulp.run( 'clean-scripts' );
 
-  gulp.src( ASSETS_DIR + 'scripts/**.js' )
+  return gulp.src( ASSETS_DIR + 'scripts/**.js' )
     .pipe( concat( 'main.js' ) )
     /**
      * uncomment the next line, if you want to strip out
@@ -147,27 +148,21 @@ gulp.task( 'images', function () {
  *  $ gulp landingpage
  *
  */
-gulp.task( 'landingpage', function(){
-    gulp.run( 'scripts' );
-    gulp.run( 'styles' );
+gulp.task( 'landingpage', function() {
+  runSequence( [ 'scripts', 'styles', 'images' ], 'template' );
+
+  gulp.watch( ASSETS_DIR + 'styles/**/*.less', function() {
+    runSequence( 'styles', 'template' );
+  });
+
+  gulp.watch( ASSETS_DIR + 'scripts/**/*.js', function() {
+    runSequence( 'scripts', 'template' );
+  });
+
+  gulp.watch( 'templates/**/*.html', function() {
     gulp.run( 'template' );
-    gulp.run( 'images' );
-
-    gulp.watch( ASSETS_DIR + 'styles/**/*.less', function() {
-      gulp.run( 'styles' );
-      gulp.run( 'template' );
-    });
-
-    gulp.watch( ASSETS_DIR + 'scripts/**/*.js', function() {
-      gulp.run( 'scripts' );
-      gulp.run( 'template' );
-    });
-
-    gulp.watch( ASSETS_DIR + 'templates/**/*.html', function() {
-      gulp.run( 'template' );
-    });
-  }
-);
+  });
+});
 
 
 /**
