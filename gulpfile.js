@@ -21,6 +21,7 @@ var gulp        = require( 'gulp' ),
     template    = require( 'gulp-template' ),
     stripDebug  = require( 'gulp-strip-debug' ),
     watch       = require( 'gulp-watch' ),
+    livereload  = require( 'gulp-livereload' ),
 
     // put all your source files into this folder:
     ASSETS_DIR = './assets/',
@@ -122,7 +123,8 @@ gulp.task( 'template', function() {
     }
     ) )
     .pipe( minifyHTML( opts ) )
-    .pipe( gulp.dest( PUBLIC_DIR ) );
+    .pipe( gulp.dest( PUBLIC_DIR ) )
+    .pipe( livereload() );
 });
 
 
