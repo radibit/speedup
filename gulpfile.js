@@ -21,6 +21,7 @@ var gulp        = require( 'gulp' ),
     runSequence = require( 'run-sequence' ),
     template    = require( 'gulp-template' ),
     stripDebug  = require( 'gulp-strip-debug' ),
+    size        = require( 'gulp-size' ),
     watch       = require( 'gulp-watch' ),
     livereload  = require( 'gulp-livereload' ),
 
@@ -156,10 +157,25 @@ gulp.task( 'template', function() {
  *    the public folder
  */
 gulp.task( 'images', function () {
-    gulp.src( ASSETS_DIR + 'images/**/*' )
-      .pipe(imagemin())
-      .pipe(gulp.dest( PUBLIC_DIR + 'images' ));
-  });
+  return gulp.src( ASSETS_DIR + 'images/**/*' )
+    .pipe(imagemin())
+    .pipe(gulp.dest( PUBLIC_DIR + 'images' ));
+});
+
+
+/*******************************************************************************
+ * SIZE
+ *
+ * this task will show you file sizes after build process
+ */
+gulp.task( 'size' , function() {
+  gutil.log( '********************************' );
+  gutil.log( '--> current file sizes not gzipped: ' );
+
+  return gulp.src( PUBLIC_DIR + '/**/*' )
+    .pipe( size( { showFiles : true } ) )
+    .pipe( gulp.dest( PUBLIC_DIR ) );
+} );
 
 
 /*******************************************************************************
@@ -171,7 +187,11 @@ gulp.task( 'images', function () {
  *
  */
 gulp.task( 'build', function() {
-  runSequence( [ 'scripts', 'styles', 'images' ], 'template' );
+  runSequence(
+    [ 'scripts', 'styles', 'images' ],
+    'template',
+    'size'
+  );
 });
 
 
