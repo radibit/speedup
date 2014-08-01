@@ -1,4 +1,4 @@
-# <img src="http://rawgithub.com/chaeringer/speedup/master/logo.svg" alt="INIT" title="INIT" width="266" height="162" style="float : right;">
+# <img src="http://rawgithub.com/chaeringer/speedup/master/logo.svg" alt="INIT" title="INIT" width="266" height="162">
 
 ## Speedup
 
