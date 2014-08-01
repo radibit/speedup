@@ -1,5 +1,8 @@
-speedup
+# <img src="http://rawgithub.com/chaeringer/speedup/master/logo.svg" alt="INIT" title="INIT" width="266" height="162">
+
 ========
+
+## Speedup
 
 [![Dependency Status](http://img.shields.io/gemnasium/chaeringer/speedup.svg?style=flat)](https://gemnasium.com/chaeringer/speedup) [![Built with gulp.js](http://img.shields.io/badge/built%20with-gulp.js-red.svg?style=flat)](http://www.gulpjs.com)
 
