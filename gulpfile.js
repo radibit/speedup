@@ -23,7 +23,7 @@ var gulp        = require( 'gulp' ),
     stripDebug  = require( 'gulp-strip-debug' ),
     size        = require( 'gulp-size' ),
     watch       = require( 'gulp-watch' ),
-    livereload  = require( 'gulp-livereload' ),
+    connect     = require( 'gulp-connect' ),
 
     // put all your source files into this folder:
     ASSETS_DIR = './assets/',
@@ -140,7 +140,7 @@ gulp.task( 'template', function() {
     ) )
     .pipe( minifyHTML( opts ) )
     .pipe( gulp.dest( PUBLIC_DIR ) )
-    .pipe( livereload( { auto : false } ) );
+    .pipe( connect.reload() );
 });
 
 
@@ -170,7 +170,15 @@ gulp.task( 'size' , function() {
   return gulp.src( PUBLIC_DIR + '/**/*' )
     .pipe( size( { showFiles : true } ) )
     .pipe( gulp.dest( PUBLIC_DIR ) );
-} );
+});
+
+
+gulp.task( 'connect', function() {
+  connect.server( {
+    root       : 'public',
+    livereload : true
+  });
+});
 
 
 /*******************************************************************************
@@ -190,18 +198,7 @@ gulp.task( 'build', function() {
 });
 
 
-/*******************************************************************************
- * DEV
- *
- * run all build related tasks and enable file watcher with:
- *
- * $ gulp dev
- *
- */
-gulp.task( 'dev', [ 'build' ], function() {
-  livereload.listen();
-
-  // generate CSS
+gulp.task( 'watch', function() {
   gulp.watch( PATHS.less, function() {
     runSequence( 'styles', 'template' );
   });
@@ -219,6 +216,18 @@ gulp.task( 'dev', [ 'build' ], function() {
     gulp.run( 'template' );
   });
 });
+
+
+/*******************************************************************************
+ * DEV
+ *
+ * run all build related tasks, kick of server at 8080
+ * and enable file watcher with:
+ *
+ * $ gulp dev
+ *
+ */
+gulp.task( 'dev', [ 'build', 'connect', 'watch' ]);
 
 
 /**
