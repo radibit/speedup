@@ -2,8 +2,7 @@
   "name": "speedUp",
   "description": "",
   "version": "0.0.1",
-  "private": true,
-  "devDependencies": {
+  "dependencies": {
     "gulp": "~3.8.0",
     "gulp-clean": "~0.2.4",
     "gulp-concat": "~2.1.7",
