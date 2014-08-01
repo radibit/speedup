@@ -33,9 +33,9 @@ var gulp        = require( 'gulp' ),
     // all paths for watching and regeneration
     PATHS      = {
       template : 'templates/**/*.html',
-      jshint   : [ 'gulpfile.js', ASSETS_DIR + 'scripts/**/*.js' ],
-      less     : ASSETS_DIR + 'styles/**/*.less',
-      scripts  : ASSETS_DIR + 'scripts/**/*.js'
+      jshint   : [ 'gulpfile.js', ASSETS_DIR + 'js/**/*.js' ],
+      less     : ASSETS_DIR + 'css/**/*.less',
+      scripts  : ASSETS_DIR + 'js/**/*.js'
     },
 
     scriptsHash = '',
@@ -53,12 +53,12 @@ var gulp        = require( 'gulp' ),
  * - and save the new file name in the 'stylesHash' variable
  */
 gulp.task( 'styles', [ 'clean-styles' ], function () {
-  return gulp.src( ASSETS_DIR + 'styles/main.less' )
+  return gulp.src( ASSETS_DIR + 'css/main.less' )
     .pipe( less() )
     .pipe( minifyCSS() )
     .pipe( prefix( 'last 1 version', '> 1%', 'ie 8', 'ie 7' ) )
     .pipe( rev() )
-    .pipe( gulp.dest( PUBLIC_DIR + 'styles/' ) )
+    .pipe( gulp.dest( PUBLIC_DIR + 'css/' ) )
     .pipe( gutil.buffer( function ( err, files ) {
       stylesHash = files.map( function ( file ) {
         return file.path.replace( file.base, '' );
@@ -69,7 +69,7 @@ gulp.task( 'styles', [ 'clean-styles' ], function () {
 
 gulp.task( 'clean-styles' , function () {
   // delete old generated stlye/css files
-  gulp.src( PUBLIC_DIR + 'styles/' )
+  gulp.src( PUBLIC_DIR + 'css/' )
     .pipe( clean() );
 });
 
@@ -94,7 +94,7 @@ gulp.task( 'scripts', [ 'clean-scripts'], function () {
     //.pipe( stripDebug() )
     .pipe( uglify( {outSourceMaps: true} ) )
     .pipe( rev() )
-    .pipe( gulp.dest( PUBLIC_DIR + 'scripts/' ) )
+    .pipe( gulp.dest( PUBLIC_DIR + 'js/' ) )
     .pipe( gutil.buffer( function ( err, files ) {
       scriptsHash = files.map( function ( file ) {
         return file.path.replace( file.base, '' );
@@ -118,7 +118,7 @@ gulp.task( 'jshint', function() {
  */
 gulp.task( 'clean-scripts' , function () {
   // delete old generated script files
-  gulp.src( PUBLIC_DIR + 'scripts/' )
+  gulp.src( PUBLIC_DIR + 'js/' )
     .pipe( clean() );
 });
 
@@ -131,12 +131,12 @@ gulp.task( 'clean-scripts' , function () {
  *  - and it will minify the HTML template file to save some bits
  */
 gulp.task( 'template', function() {
-  var opts = {comments:false,spare:false};
+  var opts = { comments : false, spare : false };
 
   gulp.src( PATHS.template )
     .pipe( template( {
-      styles  : 'styles/' + stylesHash,
-      scripts : 'scripts/' + scriptsHash
+      styles  : 'css/' + stylesHash,
+      scripts : 'js/' + scriptsHash
     }
     ) )
     .pipe( minifyHTML( opts ) )
