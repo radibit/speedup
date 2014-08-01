@@ -51,10 +51,7 @@ var gulp        = require( 'gulp' ),
  * - hash the files
  * - and save the new file name in the 'stylesHash' variable
  */
-gulp.task( 'styles', function () {
-  // trigger task to cleanup old generated style/css files
-  gulp.run( 'clean-styles' );
-
+gulp.task( 'styles', [ 'clean-styles' ], function () {
   return gulp.src( ASSETS_DIR + 'styles/main.less' )
     .pipe( less() )
     .pipe( minifyCSS() )
@@ -86,9 +83,7 @@ gulp.task( 'clean-styles' , function () {
  * - hash the files
  * - and save the new file name in the 'scriptsHash' variable
  */
-gulp.task( 'scripts' , function () {
-  gulp.run( 'clean-scripts' );
-
+gulp.task( 'scripts', [ 'clean-scripts'], function () {
   return gulp.src( PATHS.scripts )
     .pipe( concat( 'main.js' ) )
     /**
@@ -203,7 +198,7 @@ gulp.task( 'build', function() {
  * $ gulp dev
  *
  */
-gulp.task( 'dev', function() {
+gulp.task( 'dev', [ 'build' ], function() {
   livereload.listen();
 
   // generate CSS
