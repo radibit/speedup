@@ -4,6 +4,7 @@
   "version": "0.0.1",
   "dependencies": {
     "gulp": "~3.8.0",
+    "gulp-autoprefixer": "0.0.8",
     "gulp-clean": "~0.3.1",
     "gulp-concat": "~2.3.4",
     "gulp-connect": "^2.0.6",

@@ -10,6 +10,7 @@
 var gulp        = require( 'gulp' ),
     gutil       = require( 'gulp-util'),
     less        = require( 'gulp-less' ),
+    prefix      = require( 'gulp-autoprefixer' ),
     clean       = require( 'gulp-clean' ),
     concat      = require( 'gulp-concat' ),
     uglify      = require( 'gulp-uglify' ),
@@ -55,6 +56,7 @@ gulp.task( 'styles', [ 'clean-styles' ], function () {
   return gulp.src( ASSETS_DIR + 'styles/main.less' )
     .pipe( less() )
     .pipe( minifyCSS() )
+    .pipe( prefix( 'last 1 version', '> 1%', 'ie 8', 'ie 7' ) )
     .pipe( rev() )
     .pipe( gulp.dest( PUBLIC_DIR + 'styles/' ) )
     .pipe( gutil.buffer( function ( err, files ) {
@@ -62,7 +64,6 @@ gulp.task( 'styles', [ 'clean-styles' ], function () {
         return file.path.replace( file.base, '' );
       }).join( '' );
     }));
-
 });
 
 
