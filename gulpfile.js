@@ -100,21 +100,25 @@ gulp.task( 'scripts', [ 'clean-scripts'], function () {
         return file.path.replace( file.base, '' );
       }).join( '' );
     }));
-
 });
-
-
-gulp.task( 'jshint', function() {
-  return gulp.src( PATHS.jshint )
-    .pipe( jshint() )
-    .pipe( jshint.reporter( 'jshint-stylish' ) );
-} );
 
 
 /*******************************************************************************
  * JSHINT TASK
  *
  * this task will validate gulpfile and all JS in assets for JSHINT errors
+ */
+gulp.task( 'jshint', function() {
+  return gulp.src( PATHS.jshint )
+    .pipe( jshint() )
+    .pipe( jshint.reporter( 'jshint-stylish' ) );
+});
+
+
+/*******************************************************************************
+ * CLEAN-SCRIPT TASK
+ *
+ * this task will remove all generated JavaScript files in public directory
  */
 gulp.task( 'clean-scripts' , function () {
   // delete old generated script files
@@ -174,6 +178,9 @@ gulp.task( 'size' , function() {
 });
 
 
+/*******************************************************************************
+ * this task will start connect server including livereload
+ */
 gulp.task( 'connect', function() {
   connect.server( {
     root       : 'public',
@@ -199,6 +206,10 @@ gulp.task( 'build', function() {
 });
 
 
+/*******************************************************************************
+ * this task will kick off the watcher for JS, CSS, HTML files
+ * for easy and instant development
+ */
 gulp.task( 'watch', function() {
   gulp.watch( PATHS.less, function() {
     runSequence( 'styles', 'template' );
@@ -228,7 +239,7 @@ gulp.task( 'watch', function() {
  * $ gulp dev
  *
  */
-gulp.task( 'dev', [ 'build', 'connect', 'watch' ]);
+gulp.task( 'dev', [ 'build', 'connect', 'watch' ] );
 
 
 /**
