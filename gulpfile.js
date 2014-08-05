@@ -25,6 +25,7 @@ var gulp        = require( 'gulp' ),
     size        = require( 'gulp-size' ),
     watch       = require( 'gulp-watch' ),
     connect     = require( 'gulp-connect' ),
+    notify      = require( 'gulp-notify' ),
 
     // put all your source files into this folder:
     ASSETS_DIR = './assets/',
@@ -99,6 +100,10 @@ gulp.task( 'scripts', [ 'clean-scripts'], function () {
       scriptsHash = files.map( function ( file ) {
         return file.path.replace( file.base, '' );
       }).join( '' );
+    }))
+    .pipe( notify( 'build scripts' ) )
+    .on( 'error', notify.onError(function (error) {
+      return error.message;
     }));
 });
 
